@@ -12,4 +12,5 @@ build() {
 	cd $name-$version
 	python3 setup.py build
 	python3 setup.py install --root="$PKG" --skip-build --optimize=1
+	#If someone know how to adapt that to venom linux please tell me
 }
