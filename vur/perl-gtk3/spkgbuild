@@ -1,5 +1,5 @@
 # description  : Perl interface to the 3.x series of the GTK+ toolkit
-# homepage    : https://metacpan.org/release/${_perl_module}
+# homepage    : https://metacpan.org/release/gtk3
 # depends     : gtk3 perl-cairo-gobject perl-glib-object-introspection
 
 name=perl-gtk3
