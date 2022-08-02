@@ -1,0 +1,27 @@
+# desciption  : Perl interface to the 3.x series of the GTK+ toolkit
+# homepage    : https://metacpan.org/release/${_perl_module}
+# depends     : gtk3 perl-cairo-gobject perl-glib-object-introspection
+
+name=perl-gtk3
+_perl_module=Gtk3
+version=0.038
+release=2
+source="https://cpan.metacpan.org/authors/id/X/XA/XAOC/${_perl_module}-${version}.tar.gz"
+options='!emptydirs'
+
+build() {
+  cd "${_perl_module}-${version}"
+  unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
+  export PERL_MM_USE_DEFAULT=1 PERL_AUTOINSTALL=--skipdeps
+  perl Makefile.PL
+  make
+
+  unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
+  export PERL_MM_USE_DEFAULT=1
+  xvfb-run -a -s "-extension GLX -screen 0 1280x1024x24" make test
+
+  unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
+  make pure_install INSTALLDIRS=vendor DESTDIR="${PKG}"
+  # Delete unuseful files
+  find "${PKG}" -name '.packlist' -delete
+}
