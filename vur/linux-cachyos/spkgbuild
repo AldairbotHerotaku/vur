@@ -1,0 +1,241 @@
+# description	: Linux kernel, sources and modules
+# depends	: elfutils mkinitramfs openssl linux-firmware yaml cpio
+
+name=linux
+version=5.19.0
+release=1
+source="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.0}.tar.xz
+	x86_64-dotconfig
+	https://raw.githubusercontent.com/ptr1337/kernel-patches/master/5.19/all/0001-cachyos-base-all.patch
+	https://raw.githubusercontent.com/ptr1337/kernel-patches/master/5.19/sched/0001-bore.patch"
+NO_STRIP=yes
+
+build() {
+	cd linux-${version%.0}	
+    make mrproper
+	cp ../x86_64-dotconfig .config
+    #make olddefconfig
+
+CPU=$(gcc -Q -march=native --help=target|grep march=|awk '{print $2}'|head -1)
+MARCH=$(echo $CPU|tr '[:lower:]' '[:upper:]'&&echo)
+MARCH2=MIVYBRIDGE
+echo
+echo "----------------------------------"
+echo "| APPLYING AUTO-CPU-OPTIMIZATION |"
+echo "----------------------------------"
+echo "[*] DETECTED CPU (MARCH) : ${MARCH2}"
+scripts/config -k --disable CONFIG_GENERIC_CPU
+scripts/config -k --enable CONFIG_${MARCH2}
+ echo "Applying patches..."
+#src="${src%%::*}"
+#src=""
+         patch -Np1 < ../0001-cachyos-base-all.patch
+         patch -Np1 < ../0001-bore.patch
+
+        echo "Selecting BORE Scheduler..."
+        scripts/config --enable SCHED_BORE
+        echo "Setting tick rate to 750Hz..."
+        scripts/config --disable HZ_300 \
+            --enable HZ_750 \
+            --set-val HZ 750
+            echo "Disabling NUMA from kernel config..."
+        scripts/config --disable NUMA \
+            --disable AMD_NUMA \
+            --disable X86_64_ACPI_NUMA \
+            --disable NODES_SPAN_OTHER_NODES \
+            --disable NUMA_EMU \
+            --disable NEED_MULTIPLE_NODES \
+            --disable USE_PERCPU_NUMA_NODE_ID \
+            --disable ACPI_NUMA \
+            --disable ARCH_SUPPORTS_NUMA_BALANCING \
+            --disable NODES_SHIFT \
+            --undefine NODES_SHIFT \
+            --disable NEED_MULTIPLE_NODES
+            echo "Disabling MQ-Deadline I/O scheduler..."
+        scripts/config --disable MQ_IOSCHED_DEADLINE
+         echo "Disabling Kyber I/O scheduler..."
+        scripts/config --disable MQ_IOSCHED_KYBER
+        scripts/config --disable CPU_FREQ_DEFAULT_GOV_SCHEDUTIL \
+            --enable CPU_FREQ_DEFAULT_GOV_PERFORMANCE \
+            --enable PCIEASPM \
+            --enable PCIEASPM_PERFORMANCE \
+            --enable PCIE_BUS_PERFORMANCE
+             echo "Enabling full ticks..."
+        scripts/config --disable HZ_PERIODIC \
+            --disable NO_HZ_IDLE \
+            --disable CONTEXT_TRACKING_FORCE \
+            --enable NO_HZ_FULL_NODEF \
+            --enable NO_HZ_FULL \
+            --enable NO_HZ \
+            --enable NO_HZ_COMMON \
+            --enable CONTEXT_TRACKING
+            echo "Enabling low latency preempt..."
+        scripts/config --enable PREEMPT_BUILD \
+            --disable PREEMPT_NONE \
+            --disable PREEMPT_VOLUNTARY \
+            --enable PREEMPT \
+            --enable PREEMPT_COUNT \
+            --enable PREEMPTION \
+            --enable PREEMPT_DYNAMIC
+             echo "Enabling KBUILD_CFLAGS -O3..."
+        scripts/config --disable CC_OPTIMIZE_FOR_PERFORMANCE \
+            --enable CC_OPTIMIZE_FOR_PERFORMANCE_O3
+            scripts/config --module TCP_CONG_CUBIC \
+            --disable DEFAULT_CUBIC \
+            --enable TCP_CONG_BBR2 \
+            --enable DEFAULT_BBR2 \
+            --set-str DEFAULT_TCP_CONG bbr2
+            echo "Enabling multigenerational LRU..."
+       scripts/config --enable CONFIG_LRU_GEN \
+           --enable CONFIG_LRU_GEN_ENABLED \
+           --disable CONFIG_LRU_GEN_STATS
+           echo "Enabling DAMON..."
+        scripts/config --enable DAMON \
+            --enable DAMON_VADDR \
+            --enable DAMON_DBGFS \
+            --enable DAMON_SYSFS \
+            --enable DAMON_PADDR \
+            --enable DAMON_RECLAIM \
+            --enable DAMON_LRU_SORT
+            echo "Enabling Linux Random Number Generator ..."
+        scripts/config --disable RANDOM_DEFAULT_IMPL \
+            --enable LRNG \
+            --enable LRNG_SHA256 \
+            --enable LRNG_COMMON_DEV_IF \
+            --enable LRNG_DRNG_ATOMIC \
+            --enable LRNG_SYSCTL \
+            --enable LRNG_RANDOM_IF \
+            --module LRNG_KCAPI_IF \
+            --module LRNG_HWRAND_IF \
+            --enable LRNG_DEV_IF \
+            --enable LRNG_RUNTIME_ES_CONFIG \
+            --enable LRNG_IRQ_DFLT_TIMER_ES \
+            --disable LRNG_SCHED_DFLT_TIMER_ES \
+            --enable LRNG_TIMER_COMMON \
+            --disable LRNG_COLLECTION_SIZE_256 \
+            --disable LRNG_COLLECTION_SIZE_512 \
+            --enable LRNG_COLLECTION_SIZE_1024 \
+            --disable LRNG_COLLECTION_SIZE_2048 \
+            --disable LRNG_COLLECTION_SIZE_4096 \
+            --disable LRNG_COLLECTION_SIZE_8192 \
+            --set-val LRNG_COLLECTION_SIZE 1024 \
+            --enable LRNG_HEALTH_TESTS \
+            --set-val LRNG_RCT_CUTOFF 31 \
+            --set-val LRNG_APT_CUTOFF 325 \
+            --enable LRNG_IRQ \
+            --enable LRNG_CONTINUOUS_COMPRESSION_ENABLED \
+            --disable LRNG_CONTINUOUS_COMPRESSION_DISABLED \
+            --enable LRNG_ENABLE_CONTINUOUS_COMPRESSION \
+            --enable LRNG_SWITCHABLE_CONTINUOUS_COMPRESSION \
+            --set-val LRNG_IRQ_ENTROPY_RATE 256 \
+            --enable LRNG_JENT \
+            --set-val LRNG_JENT_ENTROPY_RATE 16 \
+            --enable LRNG_CPU \
+            --set-val LRNG_CPU_FULL_ENT_MULTIPLIER 1 \
+            --set-val LRNG_CPU_ENTROPY_RATE 8 \
+            --enable LRNG_SCHED \
+            --set-val LRNG_SCHED_ENTROPY_RATE 4294967295 \
+            --enable LRNG_DRNG_CHACHA20 \
+            --module LRNG_DRBG \
+            --module LRNG_DRNG_KCAPI \
+            --enable LRNG_SWITCH \
+            --enable LRNG_SWITCH_HASH \
+            --module LRNG_HASH_KCAPI \
+            --enable LRNG_SWITCH_DRNG \
+            --module LRNG_SWITCH_DRBG \
+            --module LRNG_SWITCH_DRNG_KCAPI \
+            --enable LRNG_DFLT_DRNG_CHACHA20 \
+            --disable LRNG_DFLT_DRNG_DRBG \
+            --disable LRNG_DFLT_DRNG_KCAPI \
+            --enable LRNG_TESTING_MENU \
+            --disable LRNG_RAW_HIRES_ENTROPY \
+            --disable LRNG_RAW_JIFFIES_ENTROPY \
+            --disable LRNG_RAW_IRQ_ENTROPY \
+            --disable LRNG_RAW_RETIP_ENTROPY \
+            --disable LRNG_RAW_REGS_ENTROPY \
+            --disable LRNG_RAW_ARRAY \
+            --disable LRNG_IRQ_PERF \
+            --disable LRNG_RAW_SCHED_HIRES_ENTROPY \
+            --disable LRNG_RAW_SCHED_PID_ENTROPY \
+            --disable LRNG_RAW_SCHED_START_TIME_ENTROPY \
+            --disable LRNG_RAW_SCHED_NVCSW_ENTROPY \
+            --disable LRNG_SCHED_PERF \
+            --disable LRNG_ACVT_HASH \
+            --disable LRNG_RUNTIME_MAX_WO_RESEED_CONFIG \
+            --disable LRNG_TEST_CPU_ES_COMPRESSION \
+            --enable LRNG_SELFTEST \
+            --disable LRNG_SELFTEST_PANIC
+             scripts/config --disable CONFIG_ZSWAP_DEFAULT_ON \
+            --enable ZRAM_ENTROPY \
+            --set-val ZRAM_ENTROPY_THRESHOLD 100000
+            scripts/config --disable DEBUG_INFO \
+            --disable DEBUG_INFO_BTF \
+            --disable DEBUG_INFO_DWARF4 \
+            --disable DEBUG_INFO_DWARF5 \
+            --disable PAHOLE_HAS_SPLIT_BTF \
+            --disable DEBUG_INFO_BTF_MODULES \
+            --disable SLUB_DEBUG \
+            --disable PM_DEBUG \
+            --disable PM_ADVANCED_DEBUG \
+            --disable PM_SLEEP_DEBUG \
+            --disable ACPI_DEBUG \
+            --disable SCHED_DEBUG \
+            --disable LATENCYTOP \
+            --disable DEBUG_PREEMPT
+
+	# thanks to voidlinux for kernel config
+
+	sed '/^CONFIG_LOCALVERSION=/d' -i .config
+	echo 'CONFIG_LOCALVERSION="-Venom"' >> .config
+
+
+	kernver=${version}$(grep CONFIG_LOCALVERSION= .config | cut -d '"' -f2)
+make menuconfig
+	make -j4 bzImage modules
+	make -j4 INSTALL_MOD_PATH=$PKG modules_install
+
+	mkdir -p $PKG/boot
+
+	cp  arch/x86/boot/bzImage $PKG/boot/vmlinuz-venom
+	echo $kernver > $PKG/lib/modules/KERNELVERSION
+
+	make -j4 clean
+	make -j4 prepare
+
+	rm -rf $PKG/lib/firmware
+
+	for file in $(ls arch); do
+		case $file in
+			x86|Kconfig) continue ;;
+			*) rm -fr arch/$file ;;
+		esac
+	done
+
+	# strip down sources
+	# don't package the kernel in the sources directory
+	find . -name "*Image" -exec rm "{}" \;
+	find . -name "*.cmd" -exec rm -f "{}" \; 
+	rm -f .*.d
+
+	rm -fr firmware ipc .config.old .version .cocciconfig \
+		.get_maintainer.ignore .gitattributes .gitignore .mailmap \
+		COPYING CREDITS MAINTAINERS README Documentation
+	find . -name ".gitignore" -exec rm "{}" \;
+	for dir in block certs crypto drivers fs init kernel lib mm net samples security sound usr virt; do
+		find $dir -type f \( -name "*.c" -o -name "*.h" \) -exec rm "{}" \;
+	done
+	for i in $(ls tools); do
+		[ "$i" = "objtool" ] || rm -fr tools/$i
+	done
+	for i in $(ls tools/objtool); do
+		[ "$i" = "objtool" ] || rm -fr tools/objtool/$i
+	done
+
+	rm $PKG/lib/modules/$kernver/build \
+	   $PKG/lib/modules/$kernver/source
+	mv $SRC/linux-${version%.0} $PKG/lib/modules/$kernver/build
+	ln -sv build $PKG/lib/modules/$kernver/source
+
+	# remove now broken symlinks
+	find -L $PKG/lib/modules/$kernver/build -type l -exec rm -f "{}" \;
+}
