@@ -12,9 +12,10 @@ source="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.0}.tar.xz
 NO_STRIP=yes
 
 build() {
-	cd linux-${version%.0}	
+    cd linux-${version%.0}	
     make mrproper
-	cp ../x86_64-dotconfig .config
+    make clean
+    cp ../x86_64-dotconfig .config
     #make olddefconfig
 
 CPU=$(gcc -Q -march=native --help=target|grep march=|awk '{print $2}'|head -1)
@@ -60,8 +61,6 @@ scripts/config -k --disable CONFIG_GENERIC_CPU
 scripts/config -k --enable CONFIG_${MARCH2}
 #End of auto-cpu-optimization.sh
  echo "Applying patches..."
-#src="${src%%::*}"
-#src=""
          patch -Np1 < ../0001-cachyos-base-all.patch
          patch -Np1 < ../0001-bore.patch
 
@@ -223,7 +222,7 @@ scripts/config -k --enable CONFIG_${MARCH2}
 
 
 	kernver=${version}$(grep CONFIG_LOCALVERSION= .config | cut -d '"' -f2)
-make menuconfig
+        make menuconfig
 	make -j4 bzImage modules
 	make -j4 INSTALL_MOD_PATH=$PKG modules_install
 
