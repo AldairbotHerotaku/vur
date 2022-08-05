@@ -1,8 +1,8 @@
 # description	: Android MTP client with minimalistic UI.
 # homepage	: https://whoozle.github.io/android-file-transfer-linux
 # maintainer	: aldairdoe <aldairdoe@kolabnow.com>
-# depends	: qt5-base fuse2 libxkbcommon-x11 hicolor-icon-theme file cmake qt5-tools
-name=android-file-transfer
+# depends	: fuse2 libxkbcommon file cmake
+name=android-file-transfer-cli
 version=4.2
 release=2
 source="android-file-transfer-$version.tar.gz::https://github.com/whoozle/android-file-transfer-linux/archive/v$version.tar.gz"
