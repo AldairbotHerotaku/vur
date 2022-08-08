@@ -1,0 +1,14 @@
+# description : The Multiple Git Repository Tool from the Android Open Source Project
+# homepage : https://android.googlesource.com/tools/repo
+# depends : git python
+name=repo
+version=2.28
+release=1
+source="https://www.apache.org/licenses/LICENSE-2.0.txt"
+
+build() {
+  git clone https://storage.googleapis.com/git-repo-downloads/repo
+  cd repo
+  install -vDm755 repo "$PKG/usr/bin/repo"
+  install -vDm644 docs/manifest-format.md "$PKG/usr/share/doc/$name/manifest-format.md"
+}
