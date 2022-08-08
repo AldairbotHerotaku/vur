@@ -1,6 +1,6 @@
 # Manteiner
 # description : Metapackage to pull all dependencies required to build modern Android
-depends : ffmpeg ninja imagemagick7 ccache bc bison gnupg curl flex gcc gperf inetutils openjdk-bin ncurses-32 ncurses zlib-32 libxslt "PERL SWITCH" rsync schedtool sdl squashfs-tools unzip nano zip zlib 
+depends : ffmpeg ninja imagemagick7 ccache bc bison gnupg curl flex gcc gperf inetutils openjdk-bin ncurses-32 ncurses zlib-32 libxslt perl-switch rsync schedtool sdl squashfs-tools unzip nano zip zlib 
 # PLEASE USE NANO LIKE A NORMAL PERSON
 
 name=aosp-devel
