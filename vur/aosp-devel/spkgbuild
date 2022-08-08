@@ -7,5 +7,8 @@ name=aosp-devel
 version=0.1
 release=1
 build (){
-echo "Aosp-devel shuld be installed"
+echo "Aosp-devel sohuld be installed"
+touch aosp-devel
+mkdir $PKG/opt/aosp-devel
+cp aosp-devel $PKG/opt/aosp-devel
 }
