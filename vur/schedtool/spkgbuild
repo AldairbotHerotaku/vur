@@ -1,0 +1,19 @@
+# description : Query or alter a process' scheduling policy
+# homepage : https://github.com/freequaos/schedtool
+# depends : glibc
+
+name=schedtool
+version=1.3.0
+release=1
+
+source="https://github.com/freequaos/${name}/archive/${name}-${version}.tar.gz"
+
+build() {
+  mv -v "$name-$name-$version" "$name-$version"
+  cd "$name-$version"
+  # fix install location of docs
+  sed -e 's/(RELEASE)/(TARGET)/g' -i Makefile
+  #build
+  make -j4
+  make -j4 DESTPREFIX="$PKG/usr" install
+}
