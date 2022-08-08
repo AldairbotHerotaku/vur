@@ -14,6 +14,6 @@ build() {
   # fix install location of docs
   sed -e 's/(RELEASE)/(TARGET)/g' -i Makefile
   #build
-  make -j4
-  make -j4 DESTPREFIX="$PKG/usr" install
+  make
+  make DESTPREFIX="$PKG/usr" install
 }
