@@ -5,7 +5,8 @@
 name=aosp-devel
 version=0.1
 release=1
-build (){
+
+build() {
 echo "Aosp-devel sohuld be installed"
 touch aosp-devel
 echo "This file can be deleted, its just for make scratchpkg build" >> aosp-devel
