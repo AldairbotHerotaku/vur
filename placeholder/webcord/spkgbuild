@@ -1,1 +1,3 @@
-im going to adapt it tomorrow
+I still without done with it because i dont know what is 
+install -Dm755 -t "${lib}" "${source[1]}"
+install -Dm755 -t "${lib}" "${source[2]}"
