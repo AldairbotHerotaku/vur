@@ -1,0 +1,39 @@
+# description : Driver for Realtek RTL8188CUS (8188C, 8192C) chipset wireless cards
+# homepage : http://www.realtek.com.tw
+# depends : dkms git
+
+name=8192cu-dkms
+version=v4.0.2_9000
+release=1
+options="!strip"
+_pkgname="8192cu"
+source="dkms.conf" "blacklist-8192cu-dkms.conf"
+
+build() {
+       git clone https://github.com/Rick-Moba/rtl8192cu.git
+       mv rtl8192cu $_pkgname
+        installDir="$PKG/usr/src/$_pkgname-$version"
+       
+        install -dm755 "$installDir"
+        install -m644 "dkms.conf" "$installDir"
+        install -dm755 "$PKG/etc/modprobe.d"
+        install -m644 "blacklist-8192cu-dkms.conf" "$PKG/etc/modprobe.d/blacklist-8192cu-dkms.conf"
+       
+        cd "${_pkgname}/"
+
+	rm -fr .git*
+
+	# Disable power saving
+	sed -i 's/^CONFIG_POWER_SAVING \= y/CONFIG_POWER_SAVING = n/' Makefile
+
+        for d in `find . -type d`
+        do
+                install -dm755  "$installDir/$d"
+        done
+       
+        for f in `find . -type f ! -name 'README.md' ! -name '.gitignore'`
+        do
+                install -m644 "${_pkgname}/$f" "$installDir/$f"
+        done
+       
+}
