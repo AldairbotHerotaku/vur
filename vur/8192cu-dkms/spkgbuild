@@ -33,7 +33,7 @@ build() {
        
         for f in `find . -type f ! -name 'README.md' ! -name '.gitignore'`
         do
-                install -m644 "${_pkgname}/$f" "$installDir/$f"
+                install -m644 "../${_pkgname}/$f" "$installDir/$f"
         done
        
 }
