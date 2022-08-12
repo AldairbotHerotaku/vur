@@ -5,7 +5,7 @@
 name=modprobed-db
 version=2.46
 release=1
-source="$nversion.tar.gz::https://github.com/graysky2/$name/archive/v$version.tar.gz"
+source="$version.tar.gz::https://github.com/graysky2/$name/archive/v$version.tar.gz"
 install=readme.install
 
 build() {
