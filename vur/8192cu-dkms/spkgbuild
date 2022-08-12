@@ -7,7 +7,7 @@ version=v4.0.2_9000
 release=1
 options="!strip"
 _pkgname="8192cu"
-source="dkms.conf" "blacklist-8192cu-dkms.conf"
+source="dkms.conf blacklist-8192cu-dkms.conf"
 
 build() {
        git clone https://github.com/Rick-Moba/rtl8192cu.git
