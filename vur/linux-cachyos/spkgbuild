@@ -3,8 +3,9 @@
 # depends	: elfutils mkinitramfs openssl linux-firmware yaml cpio
 
 name=linux-cachyos
-version=5.19.0
+version=5.19.1
 release=1
+options="!buildflags !makeflags"
 source="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.0}.tar.xz
 	x86_64-dotconfig
 	https://raw.githubusercontent.com/cachyos/kernel-patches/master/5.19/all/0001-cachyos-base-all.patch
