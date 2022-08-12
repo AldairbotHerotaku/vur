@@ -221,8 +221,18 @@ scripts/config -k --enable CONFIG_${MARCH2}
 	sed '/^CONFIG_LOCALVERSION=/d' -i .config
 	echo 'CONFIG_LOCALVERSION="-Venom"' >> .config
 
-
+        modprobed-db
+	modprobed-db
+	 if [ -e $HOME/.config/modprobed.db ]; then
 	kernver=${version}$(grep CONFIG_LOCALVERSION= .config | cut -d '"' -f2)
+        make  LSMOD=$HOME/.config/modprobed.db localmodconfigecho "Running Steven Rostedt's make localmodconfig now"
+	else
+            make  LSMOD=/home/*/.config/modprobed.db localmodconfigecho "Running Steven Rostedt's make localmodconfig now"
+        fi
+       make  prepare
+      	yes "" | make config >/dev/null
+      	diff -u ../config .config || :
+ 	echo "Rewrite configuration..."
         make menuconfig
 	make -j4 bzImage modules
 	make -j4 INSTALL_MOD_PATH=$PKG modules_install
