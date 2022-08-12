@@ -7,8 +7,8 @@ version=5.19.0
 release=1
 source="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.0}.tar.xz
 	x86_64-dotconfig
-	https://raw.githubusercontent.com/ptr1337/kernel-patches/master/5.19/all/0001-cachyos-base-all.patch
-	https://raw.githubusercontent.com/ptr1337/kernel-patches/master/5.19/sched/0001-bore.patch"
+	https://raw.githubusercontent.com/cachyos/kernel-patches/master/5.19/all/0001-cachyos-base-all.patch
+	https://raw.githubusercontent.com/cachyos/kernel-patches/master/5.19/sched/0001-bore.patch"
 NO_STRIP=yes
 
 build() {
