@@ -8,7 +8,7 @@ source="https://download.java.net/openjdk/jdk8u41/ri/openjdk-8u41-b04-linux-x64-
 
 build() {
        ls
-	cd java-se-8u41-ru
+	cd java-se-8u41-ri
 	mkdir -p $PKG/usr/lib
 	mkdir -p $PKG/usr/bin
 	mkdir -p $PKG/usr/conf
