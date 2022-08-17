@@ -1,0 +1,41 @@
+# Maintainer:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Maintainer: Mateusz Gozdek <mgozdekof@gmail.com>
+# Contributor: Allan McRae <allan@archlinux.org>
+# Contributor: judd <jvinet@zeroflux.org>
+# description : System V Release 4.0 curses emulation library, ABI 5
+# homepage : http://invisible-island.net/ncurses/ncurses.html
+# depends : glibc sh
+
+name=ncurses5-compat-libs
+_pkgname=ncurses
+version=6.3
+release=1
+source='https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz'
+build() {
+  cd ${_pkgname}-${version}
+
+  ./configure \
+    --prefix=/usr \
+    --mandir=/usr/share/man \
+    --with-shared \
+    --with-normal \
+    --without-debug \
+    --without-ada \
+    --enable-widec \
+    --disable-pc-files \
+    --with-cxx-binding \
+    --with-cxx-shared \
+    --with-versioned-syms \
+    --with-abi-version=5
+  make
+  make DESTDIR="$PKG" install.libs
+  install -Dm644 COPYING "$PKG/usr/share/licenses/$name/LICENSE"
+  rm -rf "$PKG/usr/include/" "$PKG/usr/lib/pkgconfig" \
+    "$PKG"/usr/lib/*.so "$PKG"/usr/lib/*.a
+
+  for lib in ncurses ncurses++ form panel menu; do
+    ln -s /usr/lib/lib${lib}w.so.5 "$PKG/usr/lib/lib${lib}.so.5"
+  done
+  ln -s /usr/lib/libncurses.so.5 "$PKG/usr/lib/libtinfo.so.5"
+  ln -s /usr/lib/libncurses.so.5 "$PKG/usr/lib/libtic.so.5"
+}
