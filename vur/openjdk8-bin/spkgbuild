@@ -8,7 +8,7 @@ source="https://download.java.net/openjdk/jdk8u41/ri/openjdk-8u41-b04-linux-x64-
 
 build() {
        ls
-	cd openlogic-openjdk-jre-8u342-b07-linux-x64/
+	cd java-se-8u41-ru
 	mkdir -p $PKG/usr/lib
 	mkdir -p $PKG/usr/bin
 	mkdir -p $PKG/usr/conf
