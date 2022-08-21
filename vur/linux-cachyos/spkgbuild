@@ -102,6 +102,10 @@ scripts/config -k --enable CONFIG_${MARCH2}
             --enable NO_HZ \
             --enable NO_HZ_COMMON \
             --enable CONTEXT_TRACKING
+	    echo "Enabling standard ZSTD modules and kernel compression rario..."
+	    scripts/config --set-val CONFIG_MODULE_COMPRESS_ZSTD_LEVEL 9 \
+	    --disable CONFIG_MODULE_COMPRESS_ZSTD_ULTRA \
+	    --set-val CONFIG_ZSTD_COMP_VAL 19
             echo "Enabling low latency preempt..."
         scripts/config --enable PREEMPT_BUILD \
             --disable PREEMPT_NONE \
