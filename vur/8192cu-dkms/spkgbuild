@@ -1,3 +1,4 @@
+# WARNING: I think this package don't work in this distro. i dont know why but after testing the RTL8188CUS has been recognized has an ethernet adaptator by networkmanager
 # description : Driver for Realtek RTL8188CUS (8188C, 8192C) chipset wireless cards
 # homepage : http://www.realtek.com.tw
 # depends : dkms git
