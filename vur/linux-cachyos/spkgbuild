@@ -3,7 +3,7 @@
 # depends	: elfutils mkinitramfs openssl linux-firmware yaml cpio
 
 name=linux-cachyos
-version=5.19.1
+version=5.19.2
 release=1
 options="!buildflags !makeflags"
 source="https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-${version%.0}.tar.xz
@@ -122,14 +122,7 @@ scripts/config -k --enable CONFIG_${MARCH2}
        scripts/config --enable CONFIG_LRU_GEN \
            --enable CONFIG_LRU_GEN_ENABLED \
            --disable CONFIG_LRU_GEN_STATS
-           echo "Enabling DAMON..."
-        scripts/config --enable DAMON \
-            --enable DAMON_VADDR \
-            --enable DAMON_DBGFS \
-            --enable DAMON_SYSFS \
-            --enable DAMON_PADDR \
-            --enable DAMON_RECLAIM \
-            --enable DAMON_LRU_SORT
+            echo "Damon has been disabled..."
             echo "Enabling Linux Random Number Generator ..."
         scripts/config --disable RANDOM_DEFAULT_IMPL \
             --enable LRNG \
