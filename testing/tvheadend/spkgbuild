@@ -1,0 +1,50 @@
+# description	: TV streaming server for Linux
+# homepage	: https://tvheadend.org/
+# depends	: ffmpeg4 zlib git x265 x264 opus openssl libvpx libvorbis libogg libtheora pcre2
+
+name=tvheadend
+version=4.3
+release=1
+noextract="foobar.tar.xz"
+options="!strip libtool"
+source="https://github.com/tvheadend/tvheadend/archive/v$version.tar.gz
+        tvheadend.initd
+        gcc-patch
+        update-vendored
+        0001-use-ffmpeg4.4.patch"
+
+build() {
+	cd src
+	#Patch ffmpeg
+	patch -Np1 -i ../0001-use-ffmpeg4.4.patch
+    cd $name-$version
+    
+    #Build and gcc work-around
+    export CFLAGS="$CFLAGS -Wno-error=array-bounds -Wno-error=address"
+
+  ./configure \
+        --prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--enable-libav \
+		--disable-ffmpeg_static \
+		--disable-libx264_static \
+		--disable-libx265_static \
+		--disable-libvpx_static \
+		--disable-libtheora_static \
+		--disable-libvorbis_static \
+		--disable-libfdkaac_static \
+		--disable-libmfx_static \
+		--python=python3 \
+		--nowerror
+
+  make
+  #Install
+  make DESTDIR="$PKG/" install
+
+  install -Dm 644 "${SRC}/tvheadend.service" -t "${PKG}/usr/lib/systemd/system"
+  install -Dm 644 "${SRC}/user.conf" "${PKG}/usr/lib/sysusers.d/tvheadend.conf"
+  install -Dm 644 "${SRC}/tmpfile.conf" "${PKG}/usr/lib/tmpfiles.d/tvheadend.conf"
+}
