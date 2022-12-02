@@ -9,13 +9,15 @@ noextract="foobar.tar.xz"
 options="!strip libtool"
 source="https://github.com/tvheadend/tvheadend/archive/v$version.tar.gz
         tvheadend.initd
-        gcc-patch
-        update-vendored
+        gcc-10.patch
+        update-vendored-libhdhomerun.patch
         0001-use-ffmpeg4.4.patch"
 
 build() {
 	cd src
-	#Patch ffmpeg
+	#Patches
+	patch -Np1 -i ../update-vendored-libhdhomerun.patch
+	patch -Np1 -i ../gcc-10.patch
 	patch -Np1 -i ../0001-use-ffmpeg4.4.patch
     cd $name-$version
     
