@@ -5,7 +5,6 @@
 name=tvheadend
 version=4.3
 release=1
-noextract="foobar.tar.xz"
 options="!strip libtool"
 source="https://github.com/tvheadend/tvheadend/archive/v$version.tar.gz
         tvheadend.service
