@@ -8,7 +8,7 @@ release=1
 noextract="foobar.tar.xz"
 options="!strip libtool"
 source="https://github.com/tvheadend/tvheadend/archive/v$version.tar.gz
-        tvheadend.initd
+        tvheadend.service
         gcc-10.patch
         update-vendored-libhdhomerun.patch
         0001-use-ffmpeg4.4.patch"
@@ -46,7 +46,5 @@ build() {
   #Install
   make DESTDIR="$PKG/" install
 
-  install -Dm 644 "${SRC}/tvheadend.service" -t "${PKG}/usr/lib/systemd/system"
-  install -Dm 644 "${SRC}/user.conf" "${PKG}/usr/lib/sysusers.d/tvheadend.conf"
-  install -Dm 644 "${SRC}/tmpfile.conf" "${PKG}/usr/lib/tmpfiles.d/tvheadend.conf"
+  install -Dm 644 "${SRC}/tvheadend.service" -t "${PKG}/etc/rc.d/tvheadend"
 }
