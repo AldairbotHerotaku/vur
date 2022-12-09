@@ -1,24 +1,23 @@
 # description	: TV streaming server for Linux
 # homepage	: https://tvheadend.org/
-# depends	: ffmpeg4 zlib git x265 x264 opus openssl libvpx libvorbis libogg libtheora pcre2
+# depends	: ffmpeg4 ffmpeg zlib git x265 x264 opus openssl libvpx libvorbis libogg libtheora pcre2 wget
 
 name=tvheadend
-version=4.3
+version=4.2.8
 release=1
 options="!strip libtool"
 source="https://github.com/tvheadend/tvheadend/archive/v$version.tar.gz
-        tvheadend.service
+        tvheadend
         gcc-10.patch
         update-vendored-libhdhomerun.patch
         0001-use-ffmpeg4.4.patch"
 
 build() {
-	cd src
+	cd ${SRC}/$name-$version
 	#Patches
 	patch -Np1 -i ../update-vendored-libhdhomerun.patch
 	patch -Np1 -i ../gcc-10.patch
 	patch -Np1 -i ../0001-use-ffmpeg4.4.patch
-    cd $name-$version
     
     #Build and gcc work-around
     export CFLAGS="$CFLAGS -Wno-error=array-bounds -Wno-error=address"
@@ -29,14 +28,14 @@ build() {
 		--mandir=/usr/share/man \
 		--infodir=/usr/share/info \
 		--localstatedir=/var \
-		--enable-libav \
-		--disable-ffmpeg_static \
-		--disable-libx264_static \
-		--disable-libx265_static \
-		--disable-libvpx_static \
-		--disable-libtheora_static \
-		--disable-libvorbis_static \
-		--disable-libfdkaac_static \
+		--disable-libav \
+		--enable-ffmpeg_static \
+		--enable-libx264_static \
+		--enable-libx265_static \
+		--enable-libvpx_static \
+		--enable-libtheora_static \
+		--enable-libvorbis_static \
+		--enable-libfdkaac_static \
 		--disable-libmfx_static \
 		--python=python3 \
 		--nowerror
@@ -45,5 +44,5 @@ build() {
   #Install
   make DESTDIR="$PKG/" install
 
-  install -Dm 644 "${SRC}/tvheadend.service" -t "${PKG}/etc/rc.d/tvheadend"
+  install -Dm 644 "${SRC}/tvheadend" -t "${PKG}/etc/rc.d/"
 }

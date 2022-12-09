@@ -1,0 +1,37 @@
+
+#!/bin/sh
+#
+# /etc/rc.d/tvheadend: start/stop tvheadend daemon
+#
+
+. /etc/rc.subr
+
+NAME="tvheadend"
+PROG=/usr/bin/tvheadend
+PIDFILE=/var/run/tvheadend.pid
+
+case $1 in
+	start)
+	msg "Starting $NAME..."
+	if [ ! -f /etc/tvheadend/config ]; then
+		ewarn "No configuration found!"
+		ewarn "Configure tvheadend and setup a user via web interface and restart this service!"
+	fi
+	start_daemon -p $PIDFILE /usr/bin/tvheadend -c /etc/tvheadend -f -p /var/run/tvheadend.pid -C
+		;;
+	stop)
+	msg "Stopping $NAME..."
+		stop_daemon -p $PIDFILE /usr/bin/tvheadend
+		;;
+	restart)
+		$0 stop
+		sleep 1
+		$0 start
+		;;
+	status)
+		status_daemon -p $PIDFILE $PROG
+		;;
+	*)
+		echo "usage: $0 [start|stop|restart|status]"
+		;;
+esac
