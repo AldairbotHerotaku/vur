@@ -1,6 +1,6 @@
 # description	: TV streaming server for Linux
 # homepage	: https://tvheadend.org/
-# depends	: ffmpeg4 ffmpeg zlib git x265 x264 opus openssl libvpx libvorbis libogg libtheora pcre2 wget
+# depends	: ffmpeg4 libavresample ffmpeg zlib git x265 x264 opus openssl libvpx libvorbis libogg libtheora pcre2 wget
 
 name=tvheadend
 version=4.2.8
