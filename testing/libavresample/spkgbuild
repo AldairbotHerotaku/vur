@@ -4,14 +4,16 @@
 
 name=libavresample
 version=4.4.1
-source="https://github.com/FFmpeg/FFmpeg/archive/refs/heads/master.zip"
+release=1
+source="https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n$version.zip"
 
 build() {
-  cd FFmpeg-master
-
+  mv FFmpeg-n$version ffmpeg
+  cd ffmpeg
   ./configure --prefix=/usr --disable-all --disable-static --enable-shared --enable-manpages --enable-avresample
 
   make
+  cd ..
   make DESTDIR="${PKG}" -C ffmpeg install install-man
 
   # Remove items owned by ffmpeg
