@@ -1,0 +1,22 @@
+# description	: libavresample from the ffmpeg package because it's been excluded due to deprecation
+# homepage    : https://ffmpeg.org/
+# depends     : nasm ffmpeg
+
+name=libavresample
+version=4.4.1
+source="https://github.com/FFmpeg/FFmpeg/archive/refs/heads/master.zip"
+
+build() {
+  cd FFmpeg-master
+
+  ./configure --prefix=/usr --disable-all --disable-static --enable-shared --enable-manpages --enable-avresample
+
+  make
+  make DESTDIR="${PKG}" -C ffmpeg install install-man
+
+  # Remove items owned by ffmpeg
+  rm -r ${PKG}/usr/share
+  rm -r ${PKG}/usr/include/libavutil
+  rm  ${PKG}/usr/lib/libavutil.so*
+  rm  ${PKG}/usr/lib/pkgconfig/libavutil.pc
+}
