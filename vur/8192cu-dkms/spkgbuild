@@ -1,40 +1,21 @@
-# WARNING: I think this package don't work in this distro. i dont know why but after testing the RTL8188CUS has been recognized has an ethernet adaptator by networkmanager
-# description : Driver for Realtek RTL8188CUS (8188C, 8192C) chipset wireless cards
+# description : Driver for Realtek RTL8192CU
 # homepage : http://www.realtek.com.tw
 # depends : dkms git
 
 name=8192cu-dkms
-version=v4.0.2_9000
+version=1.11
 release=1
 options="!strip"
 _pkgname="8192cu"
-source="dkms.conf blacklist-8192cu-dkms.conf"
-
 build() {
-       git clone https://github.com/Rick-Moba/rtl8192cu.git
-       mv rtl8192cu $_pkgname
-        installDir="$PKG/usr/src/$_pkgname-$version"
-       
-        install -dm755 "$installDir"
-        install -m644 "dkms.conf" "$installDir"
-        install -dm755 "$PKG/etc/modprobe.d"
-        install -m644 "blacklist-8192cu-dkms.conf" "$PKG/etc/modprobe.d/blacklist-8192cu-dkms.conf"
-       
-        cd "${_pkgname}/"
-
-	rm -fr .git*
-
-	# Disable power saving
-	sed -i 's/^CONFIG_POWER_SAVING \= y/CONFIG_POWER_SAVING = n/' Makefile
-
-        for d in `find . -type d`
-        do
-                install -dm755  "$installDir/$d"
-        done
-       
-        for f in `find . -type f ! -name 'README.md' ! -name '.gitignore'`
-        do
-                install -m644 "../${_pkgname}/$f" "$installDir/$f"
-        done
-       
+	git clone https://github.com/pvaret/rtl8192cu-fixes.git
+	mv rtl8192cu-fixes $_pkgname
+	make
+	mkdir -p "${PKG}"/lib/modules/`uname -r`/kernel/drivers/net/wireless/
+	install -p -m 644 8192cu.ko -t "${PKG}"/lib/modules/`uname -r`/kernel/drivers/net/wireless/
+	install -dm755 "$PKG/etc/modprobe.d"
+	install -m644 "8192.conf" "$PKG/etc/modprobe.d/8192.conf"
+	install -m644 "8192cu" "$PKG/etc/modprobe.d/8192cu"
+	rmmod rtl8192cu rtl_usb rtlwifi rtl8192c_common
+	modprobe 8192cu
 }
